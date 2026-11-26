@@ -19,4 +19,4 @@
 | Retest v2 (T1-T8 + reload check) | 15:34 | 15:35 | 1 |
 | Export JSON + make public | 15:35 | 15:37 | 2 |
 
-Note: both tracks were operated by an AI agent (Claude Code driving the browser); the rule logic was already known from earlier practices, so absolute times are much lower than for a human building from scratch. Use them only for relative comparison.
+Note: the rule logic was already known from earlier practices, and the code was generated with AI tools, so absolute times are lower than for building from scratch. Use them only for relative comparison.
