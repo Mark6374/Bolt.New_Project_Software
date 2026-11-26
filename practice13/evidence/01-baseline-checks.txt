@@ -1,0 +1,32 @@
+# Practice 13 baseline checks (2026-11-26 14:47) commit 589d034
+## npm test
+ RUN  v2.1.9 /Users/Mark/Desktop/Учеба/Software/practice13/Smart_Campus_Practice13_Project
+
+ ✓ src/availability.test.ts (17 tests) 9ms
+ ✓ src/availability.robustness.test.ts (6 tests) 4ms
+ ✓ src/explain/explain.regression.test.ts (5 tests) 38ms
+ ✓ src/explain/explain.test.ts (16 tests) 60ms
+
+ Test Files  4 passed (4)
+      Tests  44 passed (44)
+   Start at  14:47:11
+   Duration  815ms (transform 287ms, setup 0ms, collect 491ms, tests 110ms, environment 1ms, prepare 1.03s)
+
+## typecheck
+> vite-react-typescript-starter@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.app.json
+
+## lint
+
+/Users/Mark/Desktop/Учеба/Software/practice13/Smart_Campus_Practice13_Project/src/components/Timeline.tsx
+  3:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+✖ 1 problem (0 errors, 1 warning)
+
+## build
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.71 kB │ gzip:  0.38 kB
+dist/assets/index-CPe47GxI.css   16.11 kB │ gzip:  3.79 kB
+dist/assets/index-BH9QhF3k.js   173.36 kB │ gzip: 55.15 kB
+✓ built in 1.63s

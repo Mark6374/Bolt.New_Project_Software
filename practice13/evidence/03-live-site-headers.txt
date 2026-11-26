@@ -1,0 +1,16 @@
+HTTP/2 200 
+date: Thu, 26 Nov 2026 10:20:41 GMT
+content-type: text/html; charset=UTF-8
+cf-ray: a60829780bedbcb7-ALA
+cf-cache-status: DYNAMIC
+accept-ranges: bytes
+age: 19
+cache-control: public,max-age=0,must-revalidate
+server: cloudflare
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+cache-status: "Netlify Edge"; hit; ttl=31535981
+x-nf-request-id: 01M8BNYA1PRV2S1494YPV6TME1
+x-powered-by: Bolt.new
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=jGE2VcEk4Y7vNe7IFA4Ovcr2kTfjeu%2FkE%2BVCPTyGXmSsgg6QhjFCo2zS3SpB%2FANjOCxE6iFLxqfSuc1yyVzYF2xGQrTqqc4Ix%2Ba5BNWB%2BbLehj%2B9v%2FuUWWVssBE%2BA9xJbv6pAmNYeDn8YtfVtOyLnkBGdXTA"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+

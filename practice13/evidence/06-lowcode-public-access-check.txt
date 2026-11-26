@@ -1,0 +1,1 @@
+Anonymous GET /api/v1/consolidated-api/view?defaultPageId=6b08086c117389f3dc84e2e1 -> HTTP 200 as anonymousUser at 2026-11-26 15:36; response contains RoomRules source (occurrences of toMin: 15). No datasource/credentials present.

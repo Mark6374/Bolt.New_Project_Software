@@ -1,0 +1,7 @@
+R9 invalid booking 10:00-25:00, request 10:30/60 -> AVAILABLE
+R10 23:30/120 -> OUTSIDE_DAY
+T1..T7 recheck: AVAILABLE,OVERLAP,INVALID_DURATION,DURATION_TOO_LONG,START_IN_PAST,AVAILABLE
+stdout | src/contract/zz_probe.test.ts > R10 code-based precedence
+code-based R10 -> OUTSIDE_DAY
+ Test Files  1 passed (1)
+      Tests  1 passed (1)

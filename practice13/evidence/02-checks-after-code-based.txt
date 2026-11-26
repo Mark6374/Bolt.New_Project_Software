@@ -1,0 +1,77 @@
+# Practice 13 checks after code-based implementation (2026-11-26 14:48)
+## npm test
+ ✓ src/availability.test.ts > checkAvailability > T01: 11:00–12:00 is available (touches existing booking end, AC4)
+ ✓ src/availability.test.ts > checkAvailability > T02: 09:00–09:30 is unavailable because start equals current time (AC1)
+ ✓ src/availability.test.ts > checkAvailability > T03: 12:00–12:00 is unavailable because start equals end (AC1)
+ ✓ src/availability.test.ts > checkAvailability > T04: 12:30–12:00 is unavailable because start is after end (AC1)
+ ✓ src/availability.test.ts > checkAvailability > T05: 23:00–24:01 is unavailable because end exceeds 24:00 (AC1)
+ ✓ src/availability.test.ts > checkAvailability > T06: 12:00–14:00 is available (exactly 120 min, AC2)
+ ✓ src/availability.test.ts > checkAvailability > T07: 12:00–14:01 is unavailable because duration exceeds 120 min (AC2)
+ ✓ src/availability.test.ts > checkAvailability > T08: 09:30–10:00 is available (touches existing booking start, AC4)
+ ✓ src/availability.test.ts > checkAvailability > T09: 10:30–11:30 is unavailable because it overlaps existing booking (AC4)
+ ✓ src/availability.test.ts > checkAvailability > T10: 09:30–11:30 is unavailable because it overlaps existing booking (AC4)
+ ✓ src/availability.test.ts > checkAvailability > T11: 10:15–10:45 is unavailable because it is inside existing booking (AC4)
+ ✓ src/availability.test.ts > checkAvailability > T12: 10:00–11:00 is unavailable because it matches existing booking exactly (AC4)
+ ✓ src/availability.test.ts > checkAvailability > T13: 11:00–12:00 with blocked room is unavailable (AC3)
+ ✓ src/availability.test.ts > checkAvailability > T14: 10:30–11:30 with no existing bookings is available (AC4)
+ ✓ src/availability.test.ts > checkAvailability > T15: entire room object remains unchanged after a check (AC5)
+ ✓ src/availability.test.ts > checkAvailability > T16: 08:30–09:30 is unavailable because start is in the past (AC1)
+ ✓ src/availability.test.ts > checkAvailability > T17: 11:00–11:01 is available for a valid one-minute booking (AC1, AC2)
+ ✓ src/availability.robustness.test.ts > checkAvailability: malformed numeric input (R1) > rejects NaN start and end
+ ✓ src/availability.robustness.test.ts > checkAvailability: malformed numeric input (R1) > rejects NaN start
+ ✓ src/availability.robustness.test.ts > checkAvailability: malformed numeric input (R1) > rejects NaN end
+ ✓ src/availability.robustness.test.ts > checkAvailability: malformed numeric input (R1) > rejects fractional minutes
+ ✓ src/availability.robustness.test.ts > checkAvailability: malformed numeric input (R1) > rejects Infinity end
+ ✓ src/availability.robustness.test.ts > checkAvailability: malformed numeric input (R1) > does not mutate the room while rejecting malformed input
+ ✓ src/contract/contract.test.ts > Practice #13 shared contract — T1..T7 > T1: valid free interval -> AVAILABLE
+ ✓ src/contract/contract.test.ts > Practice #13 shared contract — T1..T7 > T2: overlap with existing booking -> OVERLAP
+ ✓ src/contract/contract.test.ts > Practice #13 shared contract — T1..T7 > T3: blocked room -> ROOM_BLOCKED
+ ✓ src/contract/contract.test.ts > Practice #13 shared contract — T1..T7 > T4: duration = 0 -> INVALID_DURATION
+ ✓ src/contract/contract.test.ts > Practice #13 shared contract — T1..T7 > T5: duration = 121 -> DURATION_TOO_LONG
+ ✓ src/contract/contract.test.ts > Practice #13 shared contract — T1..T7 > T6: past start time -> START_IN_PAST
+ ✓ src/contract/contract.test.ts > Practice #13 shared contract — T1..T7 > T7: adjacent non-overlapping interval -> AVAILABLE
+ ✓ src/contract/contract.test.ts > T8: booking data unchanged after checks > bookings are identical after running T1..T7
+ ✓ src/contract/contract.test.ts > AC6: understandable feedback for malformed input > start="" duration="60" -> INVALID_START
+ ✓ src/contract/contract.test.ts > AC6: understandable feedback for malformed input > start="25:00" duration="60" -> INVALID_START
+ ✓ src/contract/contract.test.ts > AC6: understandable feedback for malformed input > start="10:30" duration="" -> INVALID_DURATION
+ ✓ src/contract/contract.test.ts > AC6: understandable feedback for malformed input > start="10:30" duration="abc" -> INVALID_DURATION
+ ✓ src/contract/contract.test.ts > AC6: understandable feedback for malformed input > start="10:30" duration="1.5" -> INVALID_DURATION
+ ✓ src/contract/contract.test.ts > AC6: understandable feedback for malformed input > start="10:30" duration="-5" -> INVALID_DURATION
+ ✓ src/contract/contract.test.ts > AC6: understandable feedback for malformed input > start="23:30" duration="60" -> OUTSIDE_DAY
+ ✓ src/contract/contract.test.ts > AC6: understandable feedback for malformed input > start="08:00" duration="30" -> START_IN_PAST
+ ✓ src/contract/contract.test.ts > AC6: understandable feedback for malformed input > boundaries: 1 and 120 minutes are accepted
+ ✓ src/contract/contract.test.ts > AC6: understandable feedback for malformed input > adjacent on the other side (ends exactly when a booking starts) is available
+ ✓ src/contract/contract.test.ts > AC6: understandable feedback for malformed input > HTML in input is treated as invalid data, never rendered
+ ✓ src/explain/explain.test.ts > E01–E05 normal cases: explanation agrees with the deterministic result (AC2) > E01 available slot → generated text says free, no invented times
+ ✓ src/explain/explain.test.ts > E01–E05 normal cases: explanation agrees with the deterministic result (AC2) > E02 overlap → mentions the conflicting time range but no person name
+ ✓ src/explain/explain.test.ts > E01–E05 normal cases: explanation agrees with the deterministic result (AC2) > E03 blocked room → ROOM_BLOCKED, text says blocked
+ ✓ src/explain/explain.test.ts > E01–E05 normal cases: explanation agrees with the deterministic result (AC2) > E04 invalid interval (end before start) → INVALID_TIME
+ ✓ src/explain/explain.test.ts > E01–E05 normal cases: explanation agrees with the deterministic result (AC2) > E05 past start time → PAST_TIME
+ ✓ src/explain/explain.test.ts > E06–E08 input validation (AC3) > E06 empty input is rejected before the adapter is called
+ ✓ src/explain/explain.test.ts > E06–E08 input validation (AC3) > E07 overly long input is rejected (label > 60, question > 200)
+ ✓ src/explain/explain.test.ts > E06–E08 input validation (AC3) > E08 malformed input is rejected (bad time, unknown code, status/code mismatch)
+ ✓ src/explain/explain.regression.test.ts > R01 timeout must not depend on the adapter honouring AbortSignal (AC4) > adapter that never settles and ignores the signal still yields a timeout fallback
+ ✓ src/explain/explain.regression.test.ts > R02 output validator rejects invented people and contradictory claims (AC2) > rejects: The room cannot be used because Prof. Smith has it booked.
+ ✓ src/explain/explain.regression.test.ts > R02 output validator rejects invented people and contradictory claims (AC2) > rejects: It is not available because Dr Chen reserved it.
+ ✓ src/explain/explain.regression.test.ts > R02 output validator rejects invented people and contradictory claims (AC2) > rejects: Yes, you can use Lecture Hall A; it is not booked, so it cannot be refused.
+ ✓ src/explain/explain.regression.test.ts > R02 output validator rejects invented people and contradictory claims (AC2) > rejects: You can book Lecture Hall A now, it is not available only on paper.
+ ✓ src/explain/explain.test.ts > E09–E12 failure handling → deterministic fallback (AC4) > E09 timeout → fallback with cause 'timeout'
+ ✓ src/explain/explain.test.ts > E09–E12 failure handling → deterministic fallback (AC4) > E10 simulated API failure → fallback with cause 'api-error'
+ ✓ src/explain/explain.test.ts > E09–E12 failure handling → deterministic fallback (AC4) > E11 missing API key → fallback with cause 'no-key'
+ ✓ src/explain/explain.test.ts > E09–E12 failure handling → deterministic fallback (AC4) > E12 hallucinated output (contradicts status, invents booking, has HTML) is discarded
+ ✓ src/explain/explain.test.ts > E13–E16 safety and source-of-truth > E13 output validator rejects contradiction, extra sentences and invented times
+ ✓ src/explain/explain.test.ts > E13–E16 safety and source-of-truth > E14 prompt injection in the question does not change the status or the prompt rules
+ ✓ src/explain/explain.test.ts > E13–E16 safety and source-of-truth > E15 explaining never mutates the room, bookings or the decision (AC1/AC5 data unchanged)
+ ✓ src/explain/explain.test.ts > E13–E16 safety and source-of-truth > E16 every message produced by checkAvailability maps to a known reason code
+ Test Files  5 passed (5)
+      Tests  63 passed (63)
+## typecheck
+
+## lint
+✖ 1 problem (0 errors, 1 warning)
+
+## build
+dist/index.html                   0.71 kB │ gzip:  0.38 kB
+dist/assets/index-CexLPApa.css   16.39 kB │ gzip:  3.84 kB
+dist/assets/index-QfOXUmGM.js   175.87 kB │ gzip: 55.90 kB
+✓ built in 1.60s
