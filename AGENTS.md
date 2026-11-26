@@ -21,3 +21,9 @@ Run npm test and npm run build after any change. Report changed files, a short r
 - Send minimal context only: room label, requested times, isAvailable, reason codes, conflicting time ranges. No `bookedBy` names or other personal data.
 - Validate input (empty / malformed / too long → rejected) and validate model output (≤2 sentences, ≤320 chars, no markup, agrees with status, no invented times). On timeout, error, missing key or invalid output show the deterministic fallback.
 - Run `npm test`, `npm run typecheck`, `npm run lint`, `npm run build` after any change.
+
+## Practice #13 shared contract
+
+- `src/contract/contract.ts` implements the common contract used to compare the code-based and the low-code solution: input = start time (HH:MM), duration (min), blocked flag, fictional bookings, simulated current time; output = `{ available, reasonCode, message }`.
+- Layers: `validateContractInput` (validation) -> `evaluateContract` (calls `checkAvailability`, the only rule engine) -> `App.tsx` (display only).
+- Shared fixture and the eight test inputs T1..T8 live in `src/contract/sharedFixture.ts`; the same values are configured in the low-code app. Do not change booking rules to favour one approach.

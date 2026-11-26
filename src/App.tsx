@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { SAMPLE_ROOMS } from "./roomData";
 import { checkAvailability } from "./availability";
+import { evaluateContract, type ContractOutput } from "./contract/contract";
 import {
   minutesToTimeString,
   timeStringToMinutes,
@@ -24,7 +25,9 @@ function App() {
   const [rooms] = useState(SAMPLE_ROOMS);
   const [selectedRoomId, setSelectedRoomId] = useState(rooms[0].id);
   const [startTime, setStartTime] = useState("09:00");
-  const [endTime, setEndTime] = useState("10:00");
+  const [duration, setDuration] = useState("60");
+  const [blocked, setBlocked] = useState(SAMPLE_ROOMS[0].blocked);
+  const [contract, setContract] = useState<ContractOutput | null>(null);
   const [currentTime, setCurrentTime] = useState(() => nowInMinutes());
   const [result, setResult] = useState<CheckResult | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
@@ -38,25 +41,40 @@ function App() {
   const handleCheck = () => {
     setFormError(null);
 
-    const start = timeStringToMinutes(startTime);
-    const end = timeStringToMinutes(endTime);
+    // Layer 1+2: shared Practice #13 contract (validation, then rule engine).
+    const out = evaluateContract({
+      startTime,
+      duration,
+      blocked,
+      bookings: selectedRoom.bookings,
+      currentTime,
+    });
+    setContract(out);
 
-    if (start === null || end === null) {
-      setFormError("Please enter valid times in HH:MM format.");
+    const start = timeStringToMinutes(startTime);
+    const minutes = Number(duration);
+    const isValidationError = !["AVAILABLE", "OVERLAP", "ROOM_BLOCKED"].includes(out.reasonCode);
+    if (isValidationError || start === null) {
+      // AC6: understandable feedback; never leave a stale result on screen.
+      setResult(null);
+      setFormError(`${out.message} (${out.reasonCode})`);
       return;
     }
 
-    const candidate = { start, end, bookedBy: "Check (preview only)" };
-    const decision = checkAvailability(selectedRoom, candidate, currentTime);
-    setResult({ room: selectedRoom, interval: candidate, decision });
+    const room = { ...selectedRoom, blocked };
+    const candidate = { start, end: start + minutes, bookedBy: "Check (preview only)" };
+    const decision = checkAvailability(room, candidate, currentTime);
+    setResult({ room, interval: candidate, decision });
     setCheckId((n) => n + 1);
   };
 
   const handleReset = () => {
     setResult(null);
+    setContract(null);
     setFormError(null);
     setStartTime("09:00");
-    setEndTime("10:00");
+    setDuration("60");
+    setBlocked(selectedRoom.blocked);
     setCurrentTime(nowInMinutes());
   };
 
@@ -100,7 +118,9 @@ function App() {
                     key={room.id}
                     onClick={() => {
                       setSelectedRoomId(room.id);
+                      setBlocked(room.blocked);
                       setResult(null);
+                      setContract(null);
                       setFormError(null);
                     }}
                     className={`flex flex-col items-start gap-0.5 rounded-xl border p-3 text-left transition-all ${
@@ -166,16 +186,41 @@ function App() {
               </div>
               <div>
                 <label className="mb-1.5 flex items-center gap-1 text-sm font-medium text-slate-700">
-                  <Clock className="h-4 w-4 text-slate-400" /> End
+                  <Clock className="h-4 w-4 text-slate-400" /> Duration (min)
                 </label>
                 <input
-                  type="time"
-                  value={endTime}
-                  onChange={(e) => setEndTime(e.target.value)}
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  max={120}
+                  aria-label="Duration in minutes"
+                  value={duration}
+                  onChange={(e) => setDuration(e.target.value)}
                   className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
                 />
               </div>
             </div>
+
+            {/* Room status (blocked flag) */}
+            <label className="mb-5 flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm">
+              <span className="font-medium text-slate-700">
+                Room status:{" "}
+                <span className={blocked ? "text-red-700" : "text-emerald-700"}>
+                  {blocked ? "Blocked" : "Open"}
+                </span>
+              </span>
+              <input
+                type="checkbox"
+                aria-label="Room is blocked"
+                checked={blocked}
+                onChange={(e) => {
+                  setBlocked(e.target.checked);
+                  setResult(null);
+                  setContract(null);
+                }}
+                className="h-4 w-4 accent-red-600"
+              />
+            </label>
 
             {/* Actions */}
             <div className="flex gap-3">
@@ -194,7 +239,7 @@ function App() {
             </div>
 
             {formError && (
-              <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+              <p role="alert" className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
                 {formError}
               </p>
             )}
@@ -250,6 +295,11 @@ function App() {
                     ))}
                   </ul>
                 )}
+                {contract && (
+                  <p className="mt-3 rounded-md bg-white/70 px-2 py-1 font-mono text-xs text-slate-600" data-testid="contract-output">
+                    {`available=${String(contract.available)} · reasonCode=${contract.reasonCode}`}
+                  </p>
+                )}
                 <p className="mt-3 text-xs text-slate-500">
                   This is a read-only check — no booking is created or modified.
                 </p>
@@ -263,7 +313,7 @@ function App() {
               <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center sm:p-12">
                 <CalendarCheck className="mb-3 h-10 w-10 text-slate-300" />
                 <p className="text-sm text-slate-500">
-                  Select a room, enter a time interval, and press{" "}
+                  Select a room, enter a start time and duration, and press{" "}
                   <span className="font-semibold text-slate-700">
                     Check Availability
                   </span>{" "}
@@ -344,9 +394,9 @@ function App() {
             Validation Rules Applied
           </p>
           <ul className="grid gap-1.5 sm:grid-cols-2">
-            <li>· Times must be within 00:00–24:00 with start before end.</li>
+            <li>· Duration must be 1–120 minutes and end by 24:00.</li>
             <li>· Start must be after the current time.</li>
-            <li>· Bookings cannot exceed 120 minutes.</li>
+            <li>· Blocked flag can be toggled to test AC4.</li>
             <li>· Blocked rooms are always rejected.</li>
             <li>· Overlapping bookings are rejected (touching is OK).</li>
             <li>· Checks are read-only — no data is changed.</li>
